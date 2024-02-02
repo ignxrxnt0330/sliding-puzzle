@@ -86,10 +86,6 @@ function createGrid() {
         if (checkAvailableTile()) {
             moveTile(checkAvailableTile(tile))
         }
-        else {
-
-        }
-
     });
 }
 
