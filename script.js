@@ -104,8 +104,8 @@ function createGrid() {
 function shuffle() {
     // to ensure that the puzzle is solvable, the position of the tiles cannot be randomized, it has some rules:
     // odd grid_size -> even nº of swaps 
-    // even grid_size && empty_tile in odd row -> even nº of swaps
     // even grid_size && empty_tile in even row -> odd nº of swaps
+    // even grid_size && empty_tile in odd row -> even nº of swaps
 
     let tiles = puzzle_container.querySelectorAll(".tile");
     let swaps;
@@ -127,16 +127,12 @@ function shuffle() {
     }
     console.log(swaps);
     for (i = 0; i < swaps; i++) {
-        let tile_1;
-        while (true) {
-
+        let av_tile = false;
+        while (av_tile == false) {
             tile = tiles[Math.floor((Math.random() * tiles.length))];
-            var av_tile = checkAvailableTile(tile);
-            if (av_tile != false) {
-                moveTile(tile, av_tile)
-                break;
-            }
+            av_tile = checkAvailableTile(tile);
         }
+        moveTile(tile, av_tile)
     }
 }
 
