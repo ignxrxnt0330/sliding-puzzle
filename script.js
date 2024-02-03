@@ -31,6 +31,16 @@ grid_size_input.addEventListener("keyup", function (event) {
     }
 });
 
+puzzle_container.addEventListener("click", function (event) {
+        var tile = event.target;
+        var av_tile = checkAvailableTile(tile);
+        if (av_tile != false) {
+            moveTile(tile, av_tile)
+            increaseMoves();
+            checkCompleted();
+        }
+    });
+
 
 function start() {
     reset();
@@ -52,13 +62,15 @@ function createNumArray() {
         nums.push(i);
     }
     nums.push("");// empty tile
+    return nums;
 }
 
-function retNumNLower() {
-    num = nums[Math.floor((Math.random() * nums.length))];
-    index = nums.indexOf(num);
-    nums.splice(index, 1);// removes the num from the list; 2nd param removes only 1 element
-    return num;
+function retNumNRemove() {
+    // num = nums[Math.floor((Math.random() * nums.length))];
+    // index = nums.indexOf(num);
+    // nums.splice(index, 1);// removes the num from the list; 2nd param removes only 1 element
+    // return num;
+    return nums.splice(nums.indexOf(nums[Math.floor((Math.random() * nums.length))]), 1)
 }
 
 function createGrid() {
@@ -72,7 +84,7 @@ function createGrid() {
             // create div and add to row
             var tile = document.createElement("div");
             tile.classList.add("tile");
-            let innTxt = retNumNLower();
+            let innTxt = retNumNRemove();
             tile.innerText = innTxt;
             if (innTxt == "") {
                 tile.classList.add("empty_tile");
@@ -83,36 +95,24 @@ function createGrid() {
         puzzle_container.appendChild(row);
     }
 
-    document.querySelectorAll(".tile").forEach(function (tile) {
-        tile.addEventListener("click", function (event) {
-            var tile = event.target;
-            var av_tile = checkAvailableTile(tile);
-            if (av_tile != false) {
-                moveTile(tile,av_tile)
-                increaseMoves();
-            }
-        });
-    }
-
-    )
 }
 
 function checkAvailableTile(tile) {
     let parent_row = tile.parentElement;
 
-    if (tile.nextSibling && tile.nextSibling.classList.contains("empty_tile")) {
+    if (tile.nextSibling && tile.nextSibling.classList.contains("empty_tile")) {// right
         return tile.nextSibling;
-    } else if (tile.previousSibling && tile.previousSibling.classList.contains("empty_tile")) {
+    } else if (tile.previousSibling && tile.previousSibling.classList.contains("empty_tile")) {// left
         return tile.previousSibling;
     } else {
         rows = Array.from(puzzle_container.children);
         let rowIndex = getIndex(parent_row);
 
         if (rows[rowIndex - 1] && rows[rowIndex - 1].children && rows[rowIndex - 1].children[getIndex(tile)] &&
-            rows[rowIndex - 1].children[getIndex(tile)].classList.contains("empty_tile")) {
+            rows[rowIndex - 1].children[getIndex(tile)].classList.contains("empty_tile")) {// up
             return rows[rowIndex - 1].children[getIndex(tile)];
         } else if (rows[rowIndex + 1] && rows[rowIndex + 1].children && rows[rowIndex + 1].children[getIndex(tile)] &&
-            rows[rowIndex + 1].children[getIndex(tile)].classList.contains("empty_tile")) {
+            rows[rowIndex + 1].children[getIndex(tile)].classList.contains("empty_tile")) {// down
             return rows[rowIndex + 1].children[getIndex(tile)];
         } else {
             return false;
@@ -120,8 +120,7 @@ function checkAvailableTile(tile) {
     }
 }
 
-
-function moveTile(tile,empty_tile) {
+function moveTile(tile, empty_tile) {
     tile.classList.toggle("tile");
     tile.classList.toggle("empty_tile");
 
@@ -129,7 +128,7 @@ function moveTile(tile,empty_tile) {
     empty_tile.classList.toggle("empty_tile");
 
     empty_tile.innerText = tile.innerText;
-    tile.innerText ="";
+    tile.innerText = "";
 }
 
 
@@ -158,3 +157,23 @@ function resetMoves() {
     moves_div.innerText = "";
 
 }
+
+function checkCompleted() {
+    let nums = createNumArray();
+    let tiles = puzzle_container.querySelectorAll("div");
+
+    let isCompleted = Array.from(tiles).every((tile, index) => {
+        console.log(tile.innerText);
+        return tile.innerText == nums[index];
+    });
+    // every -> allows to check all of the elements in an array.
+    // .foreach doesnt support return  
+
+    if (isCompleted) {
+        console.log("Completed")
+        let empty = document.querySelector("empty_tile");
+        empty.classList.toggle("empty_tile");
+        empty.classList.toggle("tile");
+        empty.innerText = (grid_size * grid_size);
+    };
+};

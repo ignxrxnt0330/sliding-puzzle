@@ -15,7 +15,7 @@
 <body>
     <div class="container justify-content-center">
         <div id="params" class="row">
-            <input type="number" autofocus autocomplete="off" id="grid_size" max="99" class="text-center col-2"/>
+            <input type="number" autofocus autocomplete="off" id="grid_size" max="24" class="text-center col-2"/>
             <select id="mode" class="col-4">
                 <option value="num">Numbers</option>
                 <option value="pic">Picture</option>
