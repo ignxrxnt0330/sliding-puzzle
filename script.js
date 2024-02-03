@@ -33,6 +33,9 @@ grid_size_input.addEventListener("keyup", function (event) {
 
 puzzle_container.addEventListener("click", function (event) {
     var tile = event.target;
+    if(tile.classList.contains("row")){
+        return;
+    }
     var av_tile = checkAvailableTile(tile);
     if (av_tile != false) {
         moveTile(tile, av_tile)
@@ -103,7 +106,7 @@ function shuffle() {
     // for odd sizes we have to alter the sorted array an odd amount of times, and an even ove for even sizes
     // if we iterate a method that swaps two tiles n number of times, n being the tile size, the puzzle is always solvable
     let tiles = puzzle_container.querySelectorAll(".tile");
-    for (i = 0; i < grid_size * 3; i++) {
+    for (i = 0; i < grid_size * 2; i++) {
         let tile_1, tile_2;
         while (tile_1 === tile_2 || !tile_1 || !tile_2) {
             tile_1 = tiles[Math.floor((Math.random() * tiles.length))];
@@ -208,6 +211,7 @@ function checkCompleted() {
         empty.classList.toggle("empty_tile");
         empty.classList.toggle("tile");
         empty.innerText = (grid_size * grid_size);
+        clearInterval(timer);
         return true;
     };
     return false;
