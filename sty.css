@@ -15,3 +15,15 @@ body{
     margin:2px;
 }
 
+.empty_tile{
+    background-color: #463f3a;
+    width:50px;
+    height:50px;
+    margin:2px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {/*removes arrows*/
+  -webkit-appearance: none;
+  margin: 0;
+}

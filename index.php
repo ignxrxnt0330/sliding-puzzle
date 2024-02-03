@@ -14,12 +14,14 @@
 
 <body>
     <div class="container justify-content-center">
-        <div id="params">
-            <input type="number" autofocus autocomplete="off" id="grid_size" max="99" class="text-center"/>
-            <select id="mode">
+        <div id="params" class="row">
+            <input type="number" autofocus autocomplete="off" id="grid_size" max="99" class="text-center col-2"/>
+            <select id="mode" class="col-4">
                 <option value="num">Numbers</option>
                 <option value="pic">Picture</option>
             </select>
+        <div id="timer" style="max-width:fit-content;" class="col-2"></div>
+        <div id="moves" class="col-4"></div>
         </div>
         <div id="puzzle">
         </div>
