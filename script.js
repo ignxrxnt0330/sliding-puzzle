@@ -32,19 +32,18 @@ grid_size_input.addEventListener("keyup", function (event) {
 });
 
 puzzle_container.addEventListener("click", function (event) {
-        var tile = event.target;
-        var av_tile = checkAvailableTile(tile);
-        if (av_tile != false) {
-            moveTile(tile, av_tile)
-            increaseMoves();
-            checkCompleted();
-        }
-    });
+    var tile = event.target;
+    var av_tile = checkAvailableTile(tile);
+    if (av_tile != false) {
+        moveTile(tile, av_tile)
+        increaseMoves();
+        checkCompleted();
+    }
+});
 
 
 function start() {
     reset();
-    resetMoves();
     createGrid();
     startTimer();
 }
@@ -53,7 +52,8 @@ function reset() {
     while (puzzle_container.firstChild) {// iterates the container while it has children and it deletes them
         puzzle_container.removeChild(puzzle_container.firstChild)
     }
-
+    let nums = [];
+    resetMoves();
 }
 
 function createNumArray() {
@@ -65,17 +65,17 @@ function createNumArray() {
     return nums;
 }
 
-function retNumNRemove() {
-    // num = nums[Math.floor((Math.random() * nums.length))];
-    // index = nums.indexOf(num);
-    // nums.splice(index, 1);// removes the num from the list; 2nd param removes only 1 element
-    // return num;
-    return nums.splice(nums.indexOf(nums[Math.floor((Math.random() * nums.length))]), 1)
-}
+// function retNumNRemove() {
+//     // num = nums[Math.floor((Math.random() * nums.length))];
+//     // index = nums.indexOf(num);
+//     // nums.splice(index, 1);// removes the num from the list; 2nd param removes only 1 element
+//     // return num;
+//     return nums.splice(nums.indexOf(nums[Math.floor((Math.random() * nums.length))]), 1)
+// }
 
 function createGrid() {
-    createNumArray();
-
+    nums = createNumArray();
+    let index = 0;
     for (i = 0; i < grid_size; i++) {
         // create row
         var row = document.createElement("div");
@@ -84,7 +84,8 @@ function createGrid() {
             // create div and add to row
             var tile = document.createElement("div");
             tile.classList.add("tile");
-            let innTxt = retNumNRemove();
+            let innTxt = nums[index];
+            index++;
             tile.innerText = innTxt;
             if (innTxt == "") {
                 tile.classList.add("empty_tile");
@@ -94,7 +95,39 @@ function createGrid() {
         }
         puzzle_container.appendChild(row);
     }
+    shuffle();
+}
 
+function shuffle() {
+    // to ensure that the puzzle is solvable, the position of the tiles cannot be randomized, it has some rules:
+    // for odd sizes we have to alter the sorted array an odd amount of times, and an even ove for even sizes
+    // if we iterate a method that swaps two tiles n number of times, n being the tile size, the puzzle is always solvable
+    let tiles = puzzle_container.querySelectorAll(".tile");
+    for (i = 0; i < grid_size * 3; i++) {
+        let tile_1, tile_2;
+        while (tile_1 === tile_2 || !tile_1 || !tile_2) {
+            tile_1 = tiles[Math.floor((Math.random() * tiles.length))];
+            tile_2 = tiles[Math.floor((Math.random() * tiles.length))];
+        }
+        swap(tile_1, tile_2)
+    }
+}
+
+function swap(tile_1, tile_2) {
+    // let t = false;
+    let txt = tile_1.innerText;
+    // if (tile_1.classList.contains("tile")) {
+    //     t = true;
+    // }
+
+    tile_1.innerText = tile_2.innerText;
+    tile_2.innerText = txt;
+
+    // tile_1.classList.toggle("tile", !t);// t == true -> removes the parameter; t == false -> adds the parameter
+    // tile_1.classList.toggle("empty_tile", t);
+
+    // tile_2.classList.toggle("tile", t);
+    // tile_2.classList.toggle("empty_tile", !t);
 }
 
 function checkAvailableTile(tile) {
@@ -175,5 +208,7 @@ function checkCompleted() {
         empty.classList.toggle("empty_tile");
         empty.classList.toggle("tile");
         empty.innerText = (grid_size * grid_size);
+        return true;
     };
+    return false;
 };
