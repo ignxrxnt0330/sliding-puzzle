@@ -33,7 +33,7 @@ grid_size_input.addEventListener("keyup", function (event) {
 
 puzzle_container.addEventListener("click", function (event) {
     var tile = event.target;
-    if(tile.classList.contains("row")){
+    if (tile.classList.contains("row")) {
         return;
     }
     var av_tile = checkAvailableTile(tile);
@@ -103,34 +103,68 @@ function createGrid() {
 
 function shuffle() {
     // to ensure that the puzzle is solvable, the position of the tiles cannot be randomized, it has some rules:
-    // for odd sizes we have to alter the sorted array an odd amount of times, and an even ove for even sizes
-    // if we iterate a method that swaps two tiles n number of times, n being the tile size, the puzzle is always solvable
+    // odd grid_size -> even nº of swaps 
+    // even grid_size && empty_tile in odd row -> even nº of swaps
+    // even grid_size && empty_tile in even row -> odd nº of swaps
+
     let tiles = puzzle_container.querySelectorAll(".tile");
-    for (i = 0; i < grid_size * 2; i++) {
-        let tile_1, tile_2;
-        while (tile_1 === tile_2 || !tile_1 || !tile_2) {
-            tile_1 = tiles[Math.floor((Math.random() * tiles.length))];
-            tile_2 = tiles[Math.floor((Math.random() * tiles.length))];
+    let swaps;
+
+    switch (grid_size % 2 == 0) {
+        case true:// even
+            console.log(isEmptyTilePosEven() ? "even" : "odd");
+
+            if (isEmptyTilePosEven()) {
+                swaps = (grid_size * 4) + 1;
+            }
+            else {
+                swaps = (grid_size * 4);
+            }
+            break;
+        case false:// odd
+            swaps = grid_size * 4;
+            break;
+    }
+    console.log(swaps);
+    for (i = 0; i < swaps; i++) {
+        let tile_1;
+        while (true) {
+
+            tile = tiles[Math.floor((Math.random() * tiles.length))];
+            var av_tile = checkAvailableTile(tile);
+            if (av_tile != false) {
+                moveTile(tile, av_tile)
+                break;
+            }
         }
-        swap(tile_1, tile_2)
     }
 }
 
-function swap(tile_1, tile_2) {
-    // let t = false;
-    let txt = tile_1.innerText;
-    // if (tile_1.classList.contains("tile")) {
-    //     t = true;
-    // }
+// function swap(tile_1, tile_2) {
+//     // let tile_1_clone = tile_1.cloneNode(true);// clones the node
+//     // tile_1.parentNode.replaceChild(tile_2, tile_1);
+//     // tile_2.parentNode.replaceChild(tile_1_clone, tile_2);
 
-    tile_1.innerText = tile_2.innerText;
-    tile_2.innerText = txt;
+//     let t1_is_tile = tile_1.classList.contains("tile");
+//     let t2_is_tile = tile_2.classList.contains("tile");
 
-    // tile_1.classList.toggle("tile", !t);// t == true -> removes the parameter; t == false -> adds the parameter
-    // tile_1.classList.toggle("empty_tile", t);
+//     let txt_1 = tile_1.innerText;
+//     let txt_2 = tile_2.innerText;
 
-    // tile_2.classList.toggle("tile", t);
-    // tile_2.classList.toggle("empty_tile", !t);
+//     tile_1.innerText = txt_2;
+//     tile_2.innerText = txt_1;
+
+//     tile_1.classList.toggle("tile", t2_is_tile);// t == true -> removes the parameter; t == false -> adds the parameter
+//     tile_1.classList.toggle("empty_tile", !t2_is_tile);
+
+//     tile_2.classList.toggle("tile", t1_is_tile);
+//     tile_2.classList.toggle("empty_tile", !t1_is_tile);
+// }
+
+function isEmptyTilePosEven() {
+    empty = document.querySelector(".empty_tile");
+    let position = (getIndex(empty.parentElement) + 1);
+    return position % 2 == 0;
 }
 
 function checkAvailableTile(tile) {
@@ -199,7 +233,6 @@ function checkCompleted() {
     let tiles = puzzle_container.querySelectorAll("div");
 
     let isCompleted = Array.from(tiles).every((tile, index) => {
-        console.log(tile.innerText);
         return tile.innerText == nums[index];
     });
     // every -> allows to check all of the elements in an array.

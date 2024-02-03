@@ -16,9 +16,14 @@
     <div class="container justify-content-center">
         <div id="params" class="row">
             <input type="number" autofocus autocomplete="off" id="grid_size" max="24" class="text-center col-2"/>
-            <select id="mode" class="col-4">
+            <select id="mode" class="col-2">
                 <option value="num">Numbers</option>
                 <option value="pic">Picture</option>
+            </select>
+            <select id="dificulty" class="col-2">
+                <option value="num">Easy</option>
+                <option value="pic">Medium</option>
+                <option value="pic">Hard</option>
             </select>
         <div id="timer" style="max-width:fit-content;" class="col-2"></div>
         <div id="moves" class="col-4"></div>
