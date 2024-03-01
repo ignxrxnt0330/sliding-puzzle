@@ -8,9 +8,11 @@ let mode_select = document.getElementById("mode");
 let puzzle_container = document.getElementById("puzzle");
 let timer_div = document.getElementById("timer");
 let moves_div = document.getElementById("moves");
+let img = document.createElement("img");
+// let solve_btn = document.getElementById("solve");
 
 // variables
-let mode = mode_select.value;
+let mode;
 let grid_size = grid_size_input.value;
 let nums = [];
 let num;
@@ -27,7 +29,8 @@ grid_size_input.addEventListener("keyup", function (event) {
         grid_size_input.value = grid_size.slice(0, 2);// if the length is > 2 it removes the excess
     }
     if (event.key == "Enter") {
-        start();
+        mode = mode_select.value;
+        start(mode);
     }
 });
 
@@ -45,18 +48,28 @@ puzzle_container.addEventListener("click", function (event) {
 });
 
 
-function start() {
+function start(mode) {
     reset();
-    createGrid();
+    if (mode == "num") {
+        createGridNums();
+    }
+    else {
+        createGridPic();
+    }
     startTimer();
 }
 
 function reset() {
-    while (puzzle_container.firstChild) {// iterates the container while it has children and it deletes them
-        puzzle_container.removeChild(puzzle_container.firstChild)
+    if (mode == "num") {
+        while (puzzle_container.firstChild) {// iterates the container while it has children and it deletes them
+            puzzle_container.removeChild(puzzle_container.firstChild)
+        }
+        let nums = [];
+        resetMoves();
+    } else {
+        img.src="";
+
     }
-    let nums = [];
-    resetMoves();
 }
 
 function createNumArray() {
@@ -76,7 +89,7 @@ function createNumArray() {
 //     return nums.splice(nums.indexOf(nums[Math.floor((Math.random() * nums.length))]), 1)
 // }
 
-function createGrid() {
+function createGridNums() {
     nums = createNumArray();
     let index = 0;
     for (i = 0; i < grid_size; i++) {
@@ -115,14 +128,14 @@ function shuffle() {
             console.log(isEmptyTilePosEven() ? "even" : "odd");
 
             if (isEmptyTilePosEven()) {
-                swaps = (grid_size * 4) + 1;
+                swaps = (grid_size * 10) + 1;
             }
             else {
-                swaps = (grid_size * 4);
+                swaps = (grid_size * 10);
             }
             break;
         case false:// odd
-            swaps = grid_size * 4;
+            swaps = grid_size * 10;
             break;
     }
     console.log(swaps);
@@ -226,7 +239,7 @@ function resetMoves() {
 
 function checkCompleted() {
     let nums = createNumArray();
-    let tiles = puzzle_container.querySelectorAll("div");
+    let tiles = puzzle_container.querySelectorAll(".tile");
 
     let isCompleted = Array.from(tiles).every((tile, index) => {
         return tile.innerText == nums[index];
@@ -245,3 +258,28 @@ function checkCompleted() {
     };
     return false;
 };
+
+function createGridPic() {
+    loadPic();
+    dividePicTiles();
+}
+
+async function loadPic() {
+    const response = await fetch('https://picsum.photos/500?random=1');
+    const blob = await response.blob();// gets the response as a blob obj, commonly used when managing binary data (imgs,files...)
+    img.src = URL.createObjectURL(blob);// creates url
+
+    img.addEventListener("load", function () {
+        let childNodes = Array.from(puzzle_container.children);
+        console.log(childNodes);
+        if(childNodes.includes(img)){
+            puzzle_container.replaceChild(puzzle_container.querySelector("img"),img);
+            return;
+        }
+        puzzle_container.appendChild(img);
+    })
+}
+
+function dividePicTiles(){
+    
+}

@@ -21,12 +21,13 @@
                 <option value="pic">Picture</option>
             </select>
             <select id="dificulty" class="col-2">
-                <option value="num">Easy</option>
-                <option value="pic">Medium</option>
-                <option value="pic">Hard</option>
+                <option value="0">Easy</option>
+                <option value="1">Medium</option>
+                <option value="2">Hard</option>
             </select>
         <div id="timer" style="max-width:fit-content;" class="col-2"></div>
-        <div id="moves" class="col-4"></div>
+        <div id="moves" class="col-2"></div>
+        <!-- <button id="solve" class="btn btn-dark col-2">Solve</button> -->
         </div>
         <div id="puzzle">
         </div>
